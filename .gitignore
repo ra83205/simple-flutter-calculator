@@ -43,3 +43,13 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 .aider*
+
+# Flutter
+/ios
+/macos
+/ios
+macos/Flutter/GeneratedPluginRegistrant.swift
+macos/Flutter/Flutter-Release.xcconfig
+macos/Flutter/Flutter-Debug.xcconfig
+ios/Flutter/Release.xcconfig
+ios/Flutter/Debug.xcconfig
