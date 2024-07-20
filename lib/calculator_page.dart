@@ -76,10 +76,10 @@ class CalculatorPage extends StatelessWidget {
                 bloc.add(Clear());
                 break;
               case '+/-':
-                // Implement sign change
+                bloc.add(ChangeSign());
                 break;
               case '%':
-                // Implement percentage
+                bloc.add(Percentage());
                 break;
               case '÷':
                 bloc.add(AddOperator('/'));

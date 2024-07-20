@@ -13,3 +13,7 @@ class AddOperator extends CalculatorEvent {
 class Calculate extends CalculatorEvent {}
 
 class Clear extends CalculatorEvent {}
+
+class ChangeSign extends CalculatorEvent {}
+
+class Percentage extends CalculatorEvent {}
