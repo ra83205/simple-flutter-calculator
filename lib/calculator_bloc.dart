@@ -8,25 +8,28 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
   CalculatorBloc() : super(CalculatorInitialState());
 
   @override
-  Stream<CalculatorState> mapEventToState(CalculatorEvent event) async* {
+  void on<CalculatorEvent>(
+    CalculatorEvent event,
+    Emitter<CalculatorState> emit,
+  ) {
     if (event is AddNumber) {
       _expression += event.number;
-      yield CalculatorResultState(_expression);
+      emit(CalculatorResultState(_expression));
     } else if (event is AddOperator) {
       _expression += event.operator;
-      yield CalculatorResultState(_expression);
+      emit(CalculatorResultState(_expression));
     } else if (event is Calculate) {
       try {
         final result = _calculateResult(_expression);
-        yield CalculatorResultState(result.toString());
+        emit(CalculatorResultState(result.toString()));
       } catch (e) {
-        yield CalculatorErrorState(e.toString());
+        emit(CalculatorErrorState(e.toString()));
       }
     } else if (event is Clear) {
       _expression = "";
-      yield CalculatorInitialState();
+      emit(CalculatorInitialState());
     } else {
-      yield CalculatorErrorState("Unknown event: $event");
+      emit(CalculatorErrorState("Unknown event: $event"));
     }
   }
 
