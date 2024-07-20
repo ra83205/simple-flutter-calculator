@@ -102,6 +102,10 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
   }
 
   String _calculateResult(String expression) {
+    if (expression.contains('%')) {
+      return _operations['%']!.apply(expression);
+    }
+
     final operatorIndex = expression.indexOf(RegExp(r'[+\-*/]'));
     if (operatorIndex == -1) {
       return expression;

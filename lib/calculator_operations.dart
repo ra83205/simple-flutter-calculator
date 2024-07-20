@@ -72,7 +72,15 @@ class ReciprocalOperation implements CalculatorOperation {
 class PercentageOperation implements CalculatorOperation {
   @override
   String apply(String expression) {
-    final value = double.parse(expression);
+    if (expression.contains('*')) {
+      final parts = expression.split('*');
+      if (parts.length == 2 && parts[1].endsWith('%')) {
+        final base = double.parse(parts[0]);
+        final percentage = double.parse(parts[1].replaceAll('%', ''));
+        return ((base * percentage) / 100).toString();
+      }
+    }
+    final value = double.parse(expression.replaceAll('%', ''));
     return (value / 100).toString();
   }
 }
