@@ -8,101 +8,111 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
   double? _lastResult;
 
   CalculatorBloc() : super(CalculatorInitialState()) {
-    on<AddNumber>((event, emit) {
-      _expression += event.number;
-      emit(CalculatorResultState(_expression));
-    });
+    on<AddNumber>(_onAddNumber);
+    on<AddOperator>(_onAddOperator);
+    on<Calculate>(_onCalculate);
+    on<Clear>(_onClear);
+    on<ChangeSign>(_onChangeSign);
+    on<Percentage>(_onPercentage);
+    on<SquareRoot>(_onSquareRoot);
+    on<Square>(_onSquare);
+    on<Reciprocal>(_onReciprocal);
+  }
 
-    on<AddOperator>((event, emit) {
-      _expression += event.operator;
-      emit(CalculatorResultState(_expression));
-    });
+  void _onAddNumber(AddNumber event, Emitter<CalculatorState> emit) {
+    _expression += event.number;
+    emit(CalculatorResultState(_expression));
+  }
 
-    on<Calculate>((event, emit) {
+  void _onAddOperator(AddOperator event, Emitter<CalculatorState> emit) {
+    _expression += event.operator;
+    emit(CalculatorResultState(_expression));
+  }
+
+  void _onCalculate(Calculate event, Emitter<CalculatorState> emit) {
+    try {
+      final result = _calculateResult(_expression);
+      _lastResult = result;
+      emit(CalculatorResultState(result.toString()));
+    } catch (e) {
+      emit(CalculatorErrorState(e.toString()));
+    }
+  }
+
+  void _onClear(Clear event, Emitter<CalculatorState> emit) {
+    _expression = "";
+    _lastResult = null;
+    emit(CalculatorInitialState());
+  }
+
+  void _onChangeSign(ChangeSign event, Emitter<CalculatorState> emit) {
+    if (_lastResult != null) {
+      _lastResult = -_lastResult!;
+      _expression = _lastResult.toString();
+    } else if (_expression.isNotEmpty) {
+      if (_expression.startsWith('-')) {
+        _expression = _expression.substring(1);
+      } else {
+        _expression = '-$_expression';
+      }
+    }
+    emit(CalculatorResultState(_expression));
+  }
+
+  void _onPercentage(Percentage event, Emitter<CalculatorState> emit) {
+    if (_lastResult != null) {
+      _lastResult = _lastResult! / 100;
+      _expression = _lastResult.toString();
+    } else if (_expression.isNotEmpty) {
       try {
-        final result = _calculateResult(_expression);
-        _lastResult = result;
-        emit(CalculatorResultState(result.toString()));
+        double value = double.parse(_expression);
+        value /= 100;
+        _expression = value.toString();
       } catch (e) {
-        emit(CalculatorErrorState(e.toString()));
+        emit(CalculatorErrorState("Invalid input for percentage"));
+        return;
       }
-    });
+    }
+    emit(CalculatorResultState(_expression));
+  }
 
-    on<Clear>((event, emit) {
-      _expression = "";
-      _lastResult = null;
-      emit(CalculatorInitialState());
-    });
-
-    on<ChangeSign>((event, emit) {
-      if (_lastResult != null) {
-        _lastResult = -_lastResult!;
-        _expression = _lastResult.toString();
-      } else if (_expression.isNotEmpty) {
-        if (_expression.startsWith('-')) {
-          _expression = _expression.substring(1);
-        } else {
-          _expression = '-$_expression';
-        }
+  void _onSquareRoot(SquareRoot event, Emitter<CalculatorState> emit) {
+    try {
+      double value = _lastResult ?? double.parse(_expression);
+      if (value < 0) {
+        throw Exception("Cannot calculate square root of a negative number");
       }
+      _lastResult = sqrt(value);
+      _expression = _lastResult.toString();
       emit(CalculatorResultState(_expression));
-    });
+    } catch (e) {
+      emit(CalculatorErrorState(e.toString()));
+    }
+  }
 
-    on<Percentage>((event, emit) {
-      if (_lastResult != null) {
-        _lastResult = _lastResult! / 100;
-        _expression = _lastResult.toString();
-      } else if (_expression.isNotEmpty) {
-        try {
-          double value = double.parse(_expression);
-          value /= 100;
-          _expression = value.toString();
-        } catch (e) {
-          emit(CalculatorErrorState("Invalid input for percentage"));
-          return;
-        }
-      }
+  void _onSquare(Square event, Emitter<CalculatorState> emit) {
+    try {
+      double value = _lastResult ?? double.parse(_expression);
+      _lastResult = value * value;
+      _expression = _lastResult.toString();
       emit(CalculatorResultState(_expression));
-    });
+    } catch (e) {
+      emit(CalculatorErrorState(e.toString()));
+    }
+  }
 
-    on<SquareRoot>((event, emit) {
-      try {
-        double value = _lastResult ?? double.parse(_expression);
-        if (value < 0) {
-          throw Exception("Cannot calculate square root of a negative number");
-        }
-        _lastResult = sqrt(value);
-        _expression = _lastResult.toString();
-        emit(CalculatorResultState(_expression));
-      } catch (e) {
-        emit(CalculatorErrorState(e.toString()));
+  void _onReciprocal(Reciprocal event, Emitter<CalculatorState> emit) {
+    try {
+      double value = _lastResult ?? double.parse(_expression);
+      if (value == 0) {
+        throw Exception("Cannot divide by zero");
       }
-    });
-
-    on<Square>((event, emit) {
-      try {
-        double value = _lastResult ?? double.parse(_expression);
-        _lastResult = value * value;
-        _expression = _lastResult.toString();
-        emit(CalculatorResultState(_expression));
-      } catch (e) {
-        emit(CalculatorErrorState(e.toString()));
-      }
-    });
-
-    on<Reciprocal>((event, emit) {
-      try {
-        double value = _lastResult ?? double.parse(_expression);
-        if (value == 0) {
-          throw Exception("Cannot divide by zero");
-        }
-        _lastResult = 1 / value;
-        _expression = _lastResult.toString();
-        emit(CalculatorResultState(_expression));
-      } catch (e) {
-        emit(CalculatorErrorState(e.toString()));
-      }
-    });
+      _lastResult = 1 / value;
+      _expression = _lastResult.toString();
+      emit(CalculatorResultState(_expression));
+    } catch (e) {
+      emit(CalculatorErrorState(e.toString()));
+    }
   }
 
   double _calculateResult(String expression) {
