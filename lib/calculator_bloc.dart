@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'dart:math';
 import 'calculator_event.dart';
 import 'calculator_state.dart';
 
@@ -62,6 +63,45 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
         }
       }
       emit(CalculatorResultState(_expression));
+    });
+
+    on<SquareRoot>((event, emit) {
+      try {
+        double value = _lastResult ?? double.parse(_expression);
+        if (value < 0) {
+          throw Exception("Cannot calculate square root of a negative number");
+        }
+        _lastResult = sqrt(value);
+        _expression = _lastResult.toString();
+        emit(CalculatorResultState(_expression));
+      } catch (e) {
+        emit(CalculatorErrorState(e.toString()));
+      }
+    });
+
+    on<Square>((event, emit) {
+      try {
+        double value = _lastResult ?? double.parse(_expression);
+        _lastResult = value * value;
+        _expression = _lastResult.toString();
+        emit(CalculatorResultState(_expression));
+      } catch (e) {
+        emit(CalculatorErrorState(e.toString()));
+      }
+    });
+
+    on<Reciprocal>((event, emit) {
+      try {
+        double value = _lastResult ?? double.parse(_expression);
+        if (value == 0) {
+          throw Exception("Cannot divide by zero");
+        }
+        _lastResult = 1 / value;
+        _expression = _lastResult.toString();
+        emit(CalculatorResultState(_expression));
+      } catch (e) {
+        emit(CalculatorErrorState(e.toString()));
+      }
     });
   }
 

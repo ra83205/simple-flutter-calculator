@@ -17,3 +17,9 @@ class Clear extends CalculatorEvent {}
 class ChangeSign extends CalculatorEvent {}
 
 class Percentage extends CalculatorEvent {}
+
+class SquareRoot extends CalculatorEvent {}
+
+class Square extends CalculatorEvent {}
+
+class Reciprocal extends CalculatorEvent {}

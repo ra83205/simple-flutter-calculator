@@ -32,10 +32,11 @@ class CalculatorPage extends StatelessWidget {
               child: Column(
                 children: [
                   _buildButtonRow(context, ['C', '+/-', '%', '÷']),
-                  _buildButtonRow(context, ['7', '8', '9', '×']),
-                  _buildButtonRow(context, ['4', '5', '6', '-']),
-                  _buildButtonRow(context, ['1', '2', '3', '+']),
-                  _buildButtonRow(context, ['0', '.', '=']),
+                  _buildButtonRow(context, ['√', 'x²', '1/x', '×']),
+                  _buildButtonRow(context, ['7', '8', '9', '-']),
+                  _buildButtonRow(context, ['4', '5', '6', '+']),
+                  _buildButtonRow(context, ['1', '2', '3', '=']),
+                  _buildButtonRow(context, ['0', '.']),
                 ],
               ),
             ),
@@ -54,7 +55,7 @@ class CalculatorPage extends StatelessWidget {
   Widget _buildButton(BuildContext context, String label) {
     final isWide = label == '0';
     final isOperator = '÷×-+='.contains(label);
-    final isFunction = 'C+/-%'.contains(label);
+    final isFunction = 'C+/-%√x²1/x'.contains(label);
 
     return Expanded(
       flex: isWide ? 2 : 1,
@@ -89,6 +90,15 @@ class CalculatorPage extends StatelessWidget {
                 break;
               case '=':
                 bloc.add(Calculate());
+                break;
+              case '√':
+                bloc.add(SquareRoot());
+                break;
+              case 'x²':
+                bloc.add(Square());
+                break;
+              case '1/x':
+                bloc.add(Reciprocal());
                 break;
               default:
                 if ('+-'.contains(label)) {
