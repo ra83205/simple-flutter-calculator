@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'calculator_bloc.dart';
+import 'calculator_event.dart';
+import 'calculator_state.dart';
 
 class CalculatorPage extends StatelessWidget {
   const CalculatorPage({super.key});
