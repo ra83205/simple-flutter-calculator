@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'dart:math';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'calculator_event.dart';
 import 'calculator_state.dart';
 import 'calculator_operations.dart';
@@ -19,6 +20,7 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
   };
 
   CalculatorBloc() : super(CalculatorInitialState()) {
+    _loadLastResult();
     on<AddNumber>(_onAddNumber);
     on<AddOperator>(_onAddOperator);
     on<Calculate>(_onCalculate);
@@ -45,6 +47,7 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
       final result = _calculateResult(_expression);
       _lastResult = double.parse(result);
       emit(CalculatorResultState(result));
+      _saveLastResult();
     } catch (e) {
       emit(CalculatorErrorState(e.toString()));
     }
@@ -111,5 +114,20 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
     }
 
     return operation.apply(expression);
+  }
+
+  Future<void> _saveLastResult() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('lastResult', _lastResult?.toString() ?? '');
+  }
+
+  Future<void> _loadLastResult() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastResultString = prefs.getString('lastResult');
+    if (lastResultString != null && lastResultString.isNotEmpty) {
+      _lastResult = double.tryParse(lastResultString);
+      _expression = _lastResult?.toString() ?? '';
+      emit(CalculatorResultState(_expression));
+    }
   }
 }
