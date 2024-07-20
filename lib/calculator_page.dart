@@ -5,7 +5,9 @@ import 'calculator_event.dart';
 import 'calculator_state.dart';
 
 class CalculatorPage extends StatelessWidget {
-  const CalculatorPage({super.key});
+  final bool isDarkMode;
+
+  const CalculatorPage({super.key, required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +75,14 @@ class CalculatorPage extends StatelessWidget {
         margin: const EdgeInsets.all(1),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: isOperator ? Colors.orange : (isFunction ? const Color(0xFFD4D4D2) : Colors.white),
-            foregroundColor: isOperator || isFunction ? Colors.white : Colors.black,
+            backgroundColor: isOperator
+                ? Colors.orange
+                : (isFunction
+                    ? (isDarkMode ? Colors.grey[700] : const Color(0xFFD4D4D2))
+                    : (isDarkMode ? Colors.grey[800] : Colors.white)),
+            foregroundColor: isOperator || isFunction
+                ? Colors.white
+                : (isDarkMode ? Colors.white : Colors.black),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.zero,
             ),
