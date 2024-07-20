@@ -106,28 +106,77 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
       return _operations['%']!.apply(expression);
     }
 
-    final operators = RegExp(r'[+\-*/]');
-    final parts = expression.split(operators);
-    
-    if (parts.length == 1) {
-      return expression;
-    }
+    List<String> tokens = _tokenize(expression);
+    List<String> postfix = _infixToPostfix(tokens);
+    return _evaluatePostfix(postfix);
+  }
 
-    String result = parts[0];
-    int operatorIndex = expression.indexOf(operators);
+  List<String> _tokenize(String expression) {
+    final RegExp regex = RegExp(r'(\d*\.?\d+|[+\-*/])');
+    return regex.allMatches(expression).map((m) => m.group(0)!).toList();
+  }
 
-    for (int i = 1; i < parts.length; i++) {
-      final operator = expression[operatorIndex];
-      final operation = _operations[operator];
-      if (operation == null) {
-        throw Exception("Invalid operator");
+  List<String> _infixToPostfix(List<String> tokens) {
+    final List<String> output = [];
+    final List<String> operatorStack = [];
+    final Map<String, int> precedence = {'+': 1, '-': 1, '*': 2, '/': 2};
+
+    for (String token in tokens) {
+      if (double.tryParse(token) != null) {
+        output.add(token);
+      } else if (token == '(') {
+        operatorStack.add(token);
+      } else if (token == ')') {
+        while (operatorStack.isNotEmpty && operatorStack.last != '(') {
+          output.add(operatorStack.removeLast());
+        }
+        if (operatorStack.isNotEmpty && operatorStack.last == '(') {
+          operatorStack.removeLast();
+        }
+      } else {
+        while (operatorStack.isNotEmpty &&
+            precedence[operatorStack.last]! >= precedence[token]!) {
+          output.add(operatorStack.removeLast());
+        }
+        operatorStack.add(token);
       }
-
-      result = operation.apply('$result$operator${parts[i]}');
-      operatorIndex = expression.indexOf(operators, operatorIndex + 1);
     }
 
-    return result;
+    while (operatorStack.isNotEmpty) {
+      output.add(operatorStack.removeLast());
+    }
+
+    return output;
+  }
+
+  String _evaluatePostfix(List<String> postfix) {
+    final stack = <double>[];
+
+    for (String token in postfix) {
+      if (double.tryParse(token) != null) {
+        stack.add(double.parse(token));
+      } else {
+        final b = stack.removeLast();
+        final a = stack.removeLast();
+        switch (token) {
+          case '+':
+            stack.add(a + b);
+            break;
+          case '-':
+            stack.add(a - b);
+            break;
+          case '*':
+            stack.add(a * b);
+            break;
+          case '/':
+            if (b == 0) throw Exception("Cannot divide by zero");
+            stack.add(a / b);
+            break;
+        }
+      }
+    }
+
+    return stack.single.toString();
   }
 
   Future<void> _saveLastResult() async {
