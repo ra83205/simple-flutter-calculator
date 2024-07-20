@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
-
-part 'calculator_event.dart';
-part 'calculator_state.dart';
+import 'package:flutter_calculator3_app/calculator_event.dart';
+import 'package:flutter_calculator3_app/calculator_state.dart';
 
 class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
   CalculatorBloc() : super(CalculatorInitialState());
