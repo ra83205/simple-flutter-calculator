@@ -8,29 +8,43 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
   CalculatorBloc() : super(CalculatorInitialState());
 
   @override
-  void on<CalculatorEvent>(
-    CalculatorEvent event,
+  void on<AddNumber>(
+    AddNumber event,
     Emitter<CalculatorState> emit,
   ) {
-    if (event is AddNumber) {
-      _expression += event.number;
-      emit(CalculatorResultState(_expression));
-    } else if (event is AddOperator) {
-      _expression += event.operator;
-      emit(CalculatorResultState(_expression));
-    } else if (event is Calculate) {
-      try {
-        final result = _calculateResult(_expression);
-        emit(CalculatorResultState(result.toString()));
-      } catch (e) {
-        emit(CalculatorErrorState(e.toString()));
-      }
-    } else if (event is Clear) {
-      _expression = "";
-      emit(CalculatorInitialState());
-    } else {
-      emit(CalculatorErrorState("Unknown event: $event"));
+    _expression += event.number;
+    emit(CalculatorResultState(_expression));
+  }
+
+  @override
+  void on<AddOperator>(
+    AddOperator event,
+    Emitter<CalculatorState> emit,
+  ) {
+    _expression += event.operator;
+    emit(CalculatorResultState(_expression));
+  }
+
+  @override
+  void on<Calculate>(
+    Calculate event,
+    Emitter<CalculatorState> emit,
+  ) {
+    try {
+      final result = _calculateResult(_expression);
+      emit(CalculatorResultState(result.toString()));
+    } catch (e) {
+      emit(CalculatorErrorState(e.toString()));
     }
+  }
+
+  @override
+  void on<Clear>(
+    Clear event,
+    Emitter<CalculatorState> emit,
+  ) {
+    _expression = "";
+    emit(CalculatorInitialState());
   }
 
   double _calculateResult(String expression) {
