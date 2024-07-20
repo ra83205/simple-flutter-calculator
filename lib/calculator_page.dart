@@ -65,9 +65,8 @@ class CalculatorPage extends StatelessWidget {
   Widget _buildButton(BuildContext context, String label) {
     return Padding(
       padding: const EdgeInsets.all(1.0),
-      child: SizedBox(
-        width: 50,
-        height: 50,
+      child: SizedBox.square(
+        dimension: 50,
         child: ElevatedButton(
           onPressed: () {
             final bloc = context.read<CalculatorBloc>();

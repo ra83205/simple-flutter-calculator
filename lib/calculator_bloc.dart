@@ -7,44 +7,30 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
 
   CalculatorBloc() : super(CalculatorInitialState());
 
-  @override
-  void on<AddNumber>(
-    AddNumber event,
-    Emitter<CalculatorState> emit,
-  ) {
-    _expression += event.number;
-    emit(CalculatorResultState(_expression));
-  }
+  CalculatorBloc() : super(CalculatorInitialState()) {
+    on<AddNumber>((event, emit) {
+      _expression += event.number;
+      emit(CalculatorResultState(_expression));
+    });
 
-  @override
-  void on<AddOperator>(
-    AddOperator event,
-    Emitter<CalculatorState> emit,
-  ) {
-    _expression += event.operator;
-    emit(CalculatorResultState(_expression));
-  }
+    on<AddOperator>((event, emit) {
+      _expression += event.operator;
+      emit(CalculatorResultState(_expression));
+    });
 
-  @override
-  void on<Calculate>(
-    Calculate event,
-    Emitter<CalculatorState> emit,
-  ) {
-    try {
-      final result = _calculateResult(_expression);
-      emit(CalculatorResultState(result.toString()));
-    } catch (e) {
-      emit(CalculatorErrorState(e.toString()));
-    }
-  }
+    on<Calculate>((event, emit) {
+      try {
+        final result = _calculateResult(_expression);
+        emit(CalculatorResultState(result.toString()));
+      } catch (e) {
+        emit(CalculatorErrorState(e.toString()));
+      }
+    });
 
-  @override
-  void on<Clear>(
-    Clear event,
-    Emitter<CalculatorState> emit,
-  ) {
-    _expression = "";
-    emit(CalculatorInitialState());
+    on<Clear>((event, emit) {
+      _expression = "";
+      emit(CalculatorInitialState());
+    });
   }
 
   double _calculateResult(String expression) {
