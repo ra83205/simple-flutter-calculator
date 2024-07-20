@@ -25,6 +25,8 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
     } else if (event is Clear) {
       _expression = "";
       yield CalculatorInitialState();
+    } else {
+      yield CalculatorErrorState("Unknown event: $event");
     }
   }
 
