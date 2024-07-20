@@ -35,10 +35,16 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
   void _onAddNumber(AddNumber event, Emitter<CalculatorState> emit) {
     _expression += event.number;
     emit(CalculatorResultState(_expression));
+    _lastResult = null; // Reset last result to allow for new calculations
   }
 
   void _onAddOperator(AddOperator event, Emitter<CalculatorState> emit) {
-    _expression += event.operator;
+    if (_lastResult != null) {
+      _expression = _lastResult.toString() + event.operator;
+      _lastResult = null;
+    } else {
+      _expression += event.operator;
+    }
     emit(CalculatorResultState(_expression));
   }
 
@@ -46,6 +52,7 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
     try {
       final result = _calculateResult(_expression);
       _lastResult = double.parse(result);
+      _expression = result; // Set expression to result for chaining
       emit(CalculatorResultState(result));
       _saveLastResult();
     } catch (e) {
@@ -94,7 +101,7 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
       final value = _lastResult?.toString() ?? _expression;
       final result = _operations[operation]!.apply(value);
       _lastResult = double.parse(result);
-      _expression = result;
+      _expression = result; // Set expression to result for chaining
       emit(CalculatorResultState(_expression));
     } catch (e) {
       emit(CalculatorErrorState(e.toString()));
