@@ -10,75 +10,98 @@ class CalculatorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter Calculator'),
-      ),
-      body: Column(
-        children: [
-          BlocBuilder<CalculatorBloc, CalculatorState>(
-            builder: (context, state) {
-              return Container(
-                padding: const EdgeInsets.all(16),
-                alignment: Alignment.centerRight,
-                child: Text(
-                  state.display,
-                  style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-                ),
-              );
-            },
-          ),
-          Expanded(
-            child: GridView.count(
-              crossAxisCount: 4,
-              children: [
-                _buildButton(context, '7'),
-                _buildButton(context, '8'),
-                _buildButton(context, '9'),
-                _buildButton(context, '/'),
-                _buildButton(context, '4'),
-                _buildButton(context, '5'),
-                _buildButton(context, '6'),
-                _buildButton(context, '*'),
-                _buildButton(context, '1'),
-                _buildButton(context, '2'),
-                _buildButton(context, '3'),
-                _buildButton(context, '-'),
-                _buildButton(context, '0'),
-                _buildButton(context, '.'),
-                _buildButton(context, '='),
-                _buildButton(context, '+'),
-              ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: BlocBuilder<CalculatorBloc, CalculatorState>(
+                builder: (context, state) {
+                  return Container(
+                    padding: const EdgeInsets.all(24),
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      state.display,
+                      style: const TextStyle(fontSize: 72, fontWeight: FontWeight.w300),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () => context.read<CalculatorBloc>().add(Clear()),
-              child: const Text('Clear'),
+            Container(
+              color: const Color(0xFFF1F2F3),
+              child: Column(
+                children: [
+                  _buildButtonRow(context, ['C', '+/-', '%', '÷']),
+                  _buildButtonRow(context, ['7', '8', '9', '×']),
+                  _buildButtonRow(context, ['4', '5', '6', '-']),
+                  _buildButtonRow(context, ['1', '2', '3', '+']),
+                  _buildButtonRow(context, ['0', '.', '=']),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
+  Widget _buildButtonRow(BuildContext context, List<String> buttons) {
+    return Row(
+      children: buttons.map((button) => _buildButton(context, button)).toList(),
+    );
+  }
+
   Widget _buildButton(BuildContext context, String label) {
-    return Padding(
-      padding: const EdgeInsets.all(1.0),
-      child: SizedBox.square(
-        dimension: 50,
+    final isWide = label == '0';
+    final isOperator = '÷×-+='.contains(label);
+    final isFunction = 'C+/-%'.contains(label);
+
+    return Expanded(
+      flex: isWide ? 2 : 1,
+      child: Container(
+        height: 80,
+        margin: const EdgeInsets.all(1),
         child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isOperator ? Colors.orange : (isFunction ? const Color(0xFFD4D4D2) : Colors.white),
+            foregroundColor: isOperator || isFunction ? Colors.white : Colors.black,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+            ),
+          ),
           onPressed: () {
             final bloc = context.read<CalculatorBloc>();
-            if (label == '=') {
-              bloc.add(Calculate());
-            } else if ('+-*/'.contains(label)) {
-              bloc.add(AddOperator(label));
-            } else {
-              bloc.add(AddNumber(label));
+            switch (label) {
+              case 'C':
+                bloc.add(Clear());
+                break;
+              case '+/-':
+                // Implement sign change
+                break;
+              case '%':
+                // Implement percentage
+                break;
+              case '÷':
+                bloc.add(AddOperator('/'));
+                break;
+              case '×':
+                bloc.add(AddOperator('*'));
+                break;
+              case '=':
+                bloc.add(Calculate());
+                break;
+              default:
+                if ('+-'.contains(label)) {
+                  bloc.add(AddOperator(label));
+                } else {
+                  bloc.add(AddNumber(label));
+                }
             }
           },
-          child: Text(label, style: const TextStyle(fontSize: 20)),
+          child: Text(
+            label,
+            style: TextStyle(fontSize: isWide ? 30 : 24, fontWeight: FontWeight.w400),
+          ),
         ),
       ),
     );
