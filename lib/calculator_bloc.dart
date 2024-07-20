@@ -5,8 +5,6 @@ import 'calculator_state.dart';
 class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
   String _expression = "";
 
-  CalculatorBloc() : super(CalculatorInitialState());
-
   CalculatorBloc() : super(CalculatorInitialState()) {
     on<AddNumber>((event, emit) {
       _expression += event.number;
@@ -34,7 +32,8 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
   }
 
   double _calculateResult(String expression) {
-    final operatorIndex = expression.indexOf(RegExp(r'[+\-*/]', caseSensitive: false));
+    final operatorIndex =
+        expression.indexOf(RegExp(r'[+\-*/]', caseSensitive: false));
     if (operatorIndex == -1) {
       throw Exception("Invalid expression");
     }
