@@ -1,3 +1,5 @@
+import 'dart:math';
+
 abstract class CalculatorOperation {
   String apply(String expression);
 }
