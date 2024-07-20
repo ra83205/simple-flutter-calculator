@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'calculator_bloc.dart';
 import 'calculator_page.dart';
+import 'config_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,10 +18,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: BlocProvider(
-        create: (context) => CalculatorBloc(),
-        child: const CalculatorPage(),
-      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => BlocProvider(
+              create: (context) => CalculatorBloc(),
+              child: const CalculatorPage(),
+            ),
+        '/config': (context) => const ConfigPage(),
+      },
     );
   }
 }
