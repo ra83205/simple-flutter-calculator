@@ -43,6 +43,23 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
       _expression = "";
       yield CalculatorInitialState();
     }
+    if (event is AddNumber) {
+      _expression += event.number;
+      yield CalculatorResultState(_expression);
+    } else if (event is AddOperator) {
+      _expression += event.operator;
+      yield CalculatorResultState(_expression);
+    } else if (event is Calculate) {
+      try {
+        final result = _calculateResult(_expression);
+        yield CalculatorResultState(result.toString());
+      } catch (e) {
+        yield CalculatorErrorState(e.toString());
+      }
+    } else if (event is Clear) {
+      _expression = "";
+      yield CalculatorInitialState();
+    }
   }
 
   double _calculateResult(String expression) {
