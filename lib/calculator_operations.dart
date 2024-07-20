@@ -84,6 +84,8 @@ class PercentageOperation implements CalculatorOperation {
       final value = double.parse(expression.replaceAll('%', ''));
       return (value / 100).toString();
     }
+    // If the expression doesn't match any of the above cases,
+    // we'll return it as is, allowing for further processing
     return expression;
   }
 }

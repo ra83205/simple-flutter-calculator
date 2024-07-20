@@ -102,8 +102,15 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
   }
 
   String _calculateResult(String expression) {
+    // First, handle percentage operations
     if (expression.contains('%')) {
-      return _operations['%']!.apply(expression);
+      expression = _operations['%']!.apply(expression);
+      // If the expression was fully resolved by the percentage operation,
+      // return the result. Otherwise, continue processing.
+      if (!expression.contains('*') && !expression.contains('/') &&
+          !expression.contains('+') && !expression.contains('-')) {
+        return expression;
+      }
     }
 
     List<String> tokens = _tokenize(expression);
