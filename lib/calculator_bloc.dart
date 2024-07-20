@@ -106,18 +106,28 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
       return _operations['%']!.apply(expression);
     }
 
-    final operatorIndex = expression.indexOf(RegExp(r'[+\-*/]'));
-    if (operatorIndex == -1) {
+    final operators = RegExp(r'[+\-*/]');
+    final parts = expression.split(operators);
+    
+    if (parts.length == 1) {
       return expression;
     }
 
-    final operator = expression[operatorIndex];
-    final operation = _operations[operator];
-    if (operation == null) {
-      throw Exception("Invalid operator");
+    String result = parts[0];
+    int operatorIndex = expression.indexOf(operators);
+
+    for (int i = 1; i < parts.length; i++) {
+      final operator = expression[operatorIndex];
+      final operation = _operations[operator];
+      if (operation == null) {
+        throw Exception("Invalid operator");
+      }
+
+      result = operation.apply('$result$operator${parts[i]}');
+      operatorIndex = expression.indexOf(operators, operatorIndex + 1);
     }
 
-    return operation.apply(expression);
+    return result;
   }
 
   Future<void> _saveLastResult() async {
