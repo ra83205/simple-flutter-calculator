@@ -112,30 +112,33 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
     // First, handle percentage operations
     if (expression.contains('%')) {
       expression = _operations['%']!.apply(expression);
-      // If the expression was fully resolved by the percentage operation,
-      // return the result. Otherwise, continue processing.
-      if (!expression.contains('*') &&
-          !expression.contains('/') &&
-          !expression.contains('+') &&
-          !expression.contains('-')) {
-        return expression;
-      }
     }
 
+    // Tokenize the expression
     List<String> tokens = _tokenize(expression);
+
+    // Convert infix expression to postfix
     List<String> postfix = _infixToPostfix(tokens);
+
+    // Evaluate the postfix expression
     return _evaluatePostfix(postfix);
   }
 
   List<String> _tokenize(String expression) {
-    final RegExp regex = RegExp(r'(\d*\.?\d+|[+\-*/])');
+    final RegExp regex = RegExp(r'(\d*\.?\d+|[+\-*/()%])');
     return regex.allMatches(expression).map((m) => m.group(0)!).toList();
   }
 
   List<String> _infixToPostfix(List<String> tokens) {
     final List<String> output = [];
     final List<String> operatorStack = [];
-    final Map<String, int> precedence = {'+': 1, '-': 1, '*': 2, '/': 2};
+    final Map<String, int> precedence = {
+      '+': 1,
+      '-': 1,
+      '*': 2,
+      '/': 2,
+      '%': 2
+    };
 
     for (String token in tokens) {
       if (double.tryParse(token) != null) {
