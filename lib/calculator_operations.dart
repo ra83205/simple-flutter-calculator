@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:core';
 
 abstract class CalculatorOperation {
   String apply(String expression);
@@ -72,13 +73,12 @@ class ReciprocalOperation implements CalculatorOperation {
 class PercentageOperation implements CalculatorOperation {
   @override
   String apply(String expression) {
-    if (expression.contains('*')) {
-      final parts = expression.split('*');
-      if (parts.length == 2 && parts[1].endsWith('%')) {
-        final base = double.parse(parts[0]);
-        final percentage = double.parse(parts[1].replaceAll('%', '')) / 100;
-        return (base * percentage).toString();
-      }
+    final percentageRegex = RegExp(r'^(\d+(\.\d+)?)\*(\d+(\.\d+)?%)$');
+    final match = percentageRegex.firstMatch(expression);
+    if (match != null) {
+      final base = double.parse(match.group(1)!);
+      final percentage = double.parse(match.group(3)!.replaceAll('%', '')) / 100;
+      return (base * percentage).toString();
     }
     if (expression.endsWith('%')) {
       final value = double.parse(expression.replaceAll('%', ''));
