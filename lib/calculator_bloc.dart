@@ -51,11 +51,7 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
   void _onCalculate(Calculate event, Emitter<CalculatorState> emit) {
     try {
       final result = _calculateResult(_expression);
-      if (double.tryParse(result) != null) {
-        _lastResult = double.parse(result);
-      } else {
-        throw Exception("Invalid number format in result");
-      }
+      _lastResult = double.parse(result);
       _expression = result; // Set expression to result for chaining
       emit(CalculatorResultState(result));
       _saveLastResult();
@@ -104,9 +100,9 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
     try {
       final value = _lastResult?.toString() ?? _expression;
       final result = _operations[operation]!.apply(value);
-      //_lastResult = double.parse(result);
-      //_expression = result; // Set expression to result for chaining
-      emit(CalculatorResultState('5'));
+      _lastResult = double.parse(result);
+      _expression = result; // Set expression to result for chaining
+      emit(CalculatorResultState(_expression));
     } catch (e) {
       emit(CalculatorErrorState(e.toString()));
     }
