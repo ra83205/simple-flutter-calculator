@@ -44,12 +44,37 @@ app.*.map.json
 /android/app/release
 .aider*
 
-# Flutter
-/ios
-/macos
-/ios
-macos/Flutter/GeneratedPluginRegistrant.swift
-macos/Flutter/Flutter-Release.xcconfig
-macos/Flutter/Flutter-Debug.xcconfig
-ios/Flutter/Release.xcconfig
-ios/Flutter/Debug.xcconfig
+# Flutter/Dart/Pub related
+**/ios/Flutter/.last_build_id
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/build/
+**/ios/Runner.xcworkspace/
+
+# macOS
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+**/macos/Flutter/ephemeral/
+**/macos/Pods/
+**/macos/.symlinks/
+**/macos/build/
+
+# Windows
+**/windows/flutter/generated_plugin_registrant.cc
+**/windows/flutter/generated_plugin_registrant.h
+
+# Linux
+**/linux/flutter/generated_plugin_registrant.cc
+**/linux/flutter/generated_plugin_registrant.h
+
+# Web
+**/web/favicon.png
+**/web/icons/
+**/web/manifest.json
+
+# Android
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
