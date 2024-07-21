@@ -76,8 +76,8 @@ class PercentageOperation implements CalculatorOperation {
       final parts = expression.split('*');
       if (parts.length == 2 && parts[1].endsWith('%')) {
         final base = double.parse(parts[0]);
-        final percentage = double.parse(parts[1].replaceAll('%', ''));
-        return ((base * percentage) / 100).toString();
+        final percentage = double.parse(parts[1].replaceAll('%', '')) / 100;
+        return (base * percentage).toString();
       }
     }
     if (expression.endsWith('%')) {
