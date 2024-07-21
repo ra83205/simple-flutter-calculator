@@ -80,9 +80,11 @@ class PercentageOperation implements CalculatorOperation {
       final percentage = double.parse(match.group(3)!.replaceAll('%', '')) / 100;
       return (base * percentage).toString();
     }
-    if (expression.endsWith('%')) {
-      final value = double.parse(expression.replaceAll('%', ''));
-      return (value / 100).toString();
+    if (expression.contains('*') && expression.endsWith('%')) {
+      final parts = expression.split('*');
+      final base = double.parse(parts[0]);
+      final percentage = double.parse(parts[1].replaceAll('%', '')) / 100;
+      return (base * percentage).toString();
     }
     // If the expression doesn't match any of the above cases,
     // we'll return it as is, allowing for further processing
