@@ -110,7 +110,7 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
 
   String _calculateResult(String expression) {
     // First, handle percentage operations
-    if (expression.contains('%')) {
+    while (expression.contains('%')) {
       expression = _operations['%']!.apply(expression);
     }
 

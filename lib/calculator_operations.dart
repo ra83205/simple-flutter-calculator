@@ -74,7 +74,7 @@ class ReciprocalOperation implements CalculatorOperation {
 class PercentageOperation implements CalculatorOperation {
   @override
   String apply(String expression) {
-    final percentageRegex = RegExp(r'^(\d+(\.\d+)?)\*(\d+(\.\d+)?%)$');
+    final percentageRegex = RegExp(r'(\d+(\.\d+)?)\*(\d+(\.\d+)?%)');
     final match = percentageRegex.firstMatch(expression);
     if (match != null) {
       final base = double.parse(match.group(1)!);
