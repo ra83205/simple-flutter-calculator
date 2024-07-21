@@ -32,7 +32,8 @@ class CalculatorPage extends StatelessWidget {
                     alignment: Alignment.bottomRight,
                     child: Text(
                       state.display,
-                      style: const TextStyle(fontSize: 72, fontWeight: FontWeight.w300),
+                      style: const TextStyle(
+                          fontSize: 72, fontWeight: FontWeight.w300),
                     ),
                   );
                 },
@@ -97,7 +98,7 @@ class CalculatorPage extends StatelessWidget {
                 bloc.add(ChangeSign());
                 break;
               case '%':
-                bloc.add(Percentage());
+                bloc.add(AddOperator('%')); // % как оператор
                 break;
               case '÷':
                 bloc.add(AddOperator('/'));
@@ -127,7 +128,8 @@ class CalculatorPage extends StatelessWidget {
           },
           child: Text(
             label,
-            style: TextStyle(fontSize: isWide ? 30 : 24, fontWeight: FontWeight.w400),
+            style: TextStyle(
+                fontSize: isWide ? 30 : 24, fontWeight: FontWeight.w400),
           ),
         ),
       ),
