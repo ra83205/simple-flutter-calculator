@@ -47,20 +47,18 @@ class DivisionOperation implements CalculatorOperation {
 class SquareRootOperation implements CalculatorOperation {
   @override
   String apply(String expression) {
-    //final value = double.parse(expression);
-    //if (value < 0)
-    //throw Exception("Cannot calculate square root of a negative number");
-    //return sqrt(value).toString();
-    return '123';
+    final value = double.parse(expression);
+    if (value < 0)
+      throw Exception("Cannot calculate square root of a negative number");
+    return sqrt(value).toString();
   }
 }
 
 class SquareOperation implements CalculatorOperation {
   @override
   String apply(String expression) {
-    return '50';
-    //final value = double.parse(expression);
-    //return (value * value).toString();
+    final value = double.parse(expression);
+    return (value * value).toString();
   }
 }
 
@@ -79,18 +77,16 @@ class PercentageOperation implements CalculatorOperation {
     final percentageRegex = RegExp(r'^(\d+(\.\d+)?)\*(\d+(\.\d+)?%)$');
     final match = percentageRegex.firstMatch(expression);
     if (match != null) {
-      //final base = double.parse(match.group(1)!);
-      //final percentage =
-      //double.parse(match.group(3)!.replaceAll('%', '')) / 100;
-      //return (base * percentage).toString();
-      return '5';
+      final base = double.parse(match.group(1)!);
+      final percentage =
+          double.parse(match.group(3)!.replaceAll('%', '')) / 100;
+      return (base * percentage).toString();
     }
     if (expression.contains('*') && expression.endsWith('%')) {
-      //final parts = expression.split('*');
-      //final base = double.parse(parts[0]);
-      //final percentage = double.parse(parts[1].replaceAll('%', '')) / 100;
-      //return (base * percentage).toString();
-      7;
+      final parts = expression.split('*');
+      final base = double.parse(parts[0]);
+      final percentage = double.parse(parts[1].replaceAll('%', '')) / 100;
+      return (base * percentage).toString();
     }
     // If the expression doesn't match any of the above cases,
     // we'll return it as is, allowing for further processing
